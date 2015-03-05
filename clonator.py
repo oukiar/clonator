@@ -12,13 +12,14 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.video import Video
+from kivy.uix.popup import Popup
 
 from kivy.properties import StringProperty
 
 import os, time
 
 from hdutils import get_hd_info
-from utils import MessageBox, MessageBoxTime, LabelItem, ngDialog
+from devslib.utils import MessageBox, MessageBoxTime, LabelItem, ngDialog
 
 hd_blacklist = ['6VPEASNP', '5YD3JQBN', 'Z1D3CPFY']
 
@@ -231,10 +232,11 @@ class Clonator(FloatLayout):
             self.lb_info.text = 'ERROR: Debe elejir un origen y un destino'
             return
             
-        self.msg = MessageBox(title='Esta seguro que desea iniciar la operacion?')
+        self.msg = MessageBox(title='Esta seguro que desea iniciar la operacion?', size_hint=(None,None), size=(400,150))
         self.msg.btn_aceptar.bind(on_press=self.iniciar_confirmado)
+        self.msg.btn_cancelar.bind(on_press=self.msg.dismiss)
         
-        self.add_widget(self.msg)
+        self.msg.open()
         
     def iniciar_confirmado(self, w):
         #extraer dispositivo origen y disp. destino
