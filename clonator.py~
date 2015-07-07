@@ -20,7 +20,6 @@ import os, time
 
 from hdutils import get_hd_info
 from devslib.utils import MessageBox, MessageBoxTime, LabelItem, ngDialog
-from devslib.scrollbox import ScrollBox
 
 hd_blacklist = ['6VPEASNP', '5YD3JQBN', 'Z1D3CPFY']
 
@@ -50,7 +49,7 @@ class ImageName(ngDialog):
                                         **kwargs)
         
     
-class ImageFiles(Popup):
+class ImageFiles(ngDialog):
     
     imgfile_selected = StringProperty('')
     
@@ -67,11 +66,10 @@ class ImageFiles(Popup):
                                             **kwargs)
                           
     def list_images(self):
-        self.box_images = ScrollBox()
-        self.box_images.orientation = "vertical"
+        self.box_images = BoxLayout(orientation='vertical')
         
         for i in os.listdir(os.path.join(self.imagespath, 'IMAGES') ):
-            button = Button(text=i, height=50)
+            button = Button(text=i)
             button.bind(on_press=self.on_button)
             self.box_images.add_widget(button)
             
@@ -82,7 +80,6 @@ class ImageFiles(Popup):
             
     def on_button(self, w):
         self.imgfile_selected = w.text
-        self.dismiss()
         
     
 class Clonator(FloatLayout):
@@ -90,20 +87,20 @@ class Clonator(FloatLayout):
     def __init__(self, **kwargs):
         super(Clonator, self).__init__(**kwargs)
         
-        self.lay_box = BoxLayout(orientation='vertical', padding=50, spacing=10)
+        self.lay_box = BoxLayout(orientation='vertical')
         
         self.clonando = False
         
         self.curblock = 0
         self.sizeblock = 2**23   # 2 elevado a la 22 == 4MB
         
-        self.imagespath = '/mnt/DEVS'
+        self.imagespath = '/media/clonator/DEVS'
         
         #image files
-        #try:
-        self.imgfiles = ImageFiles(imagespath=self.imagespath)
-        #except:
-            #self.imgfiles = None
+        try:
+            self.imgfiles = ImageFiles(imagespath=self.imagespath)
+        except:
+            self.imgfiles = None
         
         self.hd_src = LabelItem(caption='Origen', itemtype=Spinner, item_kwargs={'text':'Seleccionar origen', 'values':self.list_disks_src()} )
         self.hd_src.item.bind(text=self.on_hd_src)
@@ -152,13 +149,12 @@ class Clonator(FloatLayout):
         self.devsrc = self.get_dev(val)
         
         if self.devsrc == 'IMAGEN':
-            #self.add_widget(self.imgfiles)
-            self.imgfiles.open()
+            self.add_widget(self.imgfiles)
             self.imgfiles.bind(imgfile_selected=self.on_selected_image)
             
     def on_selected_image(self, w, val):
         self.devsrc = os.path.join(self.imagespath, 'IMAGES', val)
-        #self.remove_widget(self.imgfiles)
+        self.remove_widget(self.imgfiles)
         #self.hd_src.item.text = val
         
     def on_hd_dst(self, w, val):
