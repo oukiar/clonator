@@ -1,0 +1,117 @@
+
+
+<Clonator>:
+    origen:origen
+    destino:destino
+    
+    model_src:model_src
+    serial_src:serial_src
+    
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            padding: 20
+            spacing: 30
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    text: "Origen"
+                    font_size: 32
+                    
+                Spinner:
+                    id: origen
+                    size_hint_y: None
+                    height: 50
+                    on_text: root.set_origen(args[1])
+                
+                BoxLayout:
+                    orientation: "vertical"
+                    
+                    padding: 20
+                    
+                    Label:
+                        id: model_src
+                        text: "Model:"
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                        
+                    Label:
+                        id: serial_src
+                        text: "S/N:"
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                    
+                    
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    text: "Destino"
+                    font_size: 32
+                    
+                Spinner:
+                    id: destino
+                    size_hint_y: None
+                    height: 50
+                
+                BoxLayout:
+                    orientation: "vertical"
+                    
+                    padding: 20
+                    
+                    Label:
+                        text: "Model:"
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+                        
+                    Label:
+                        text: "S/N:"
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'middle'
+            
+        AnchorLayout:
+            size_hint_y: None
+            height: 40
+            BoxLayout:
+                size_hint_x: None
+                width: 350
+        
+                Label: 
+                    text: "Continuar clonacion"
+                    
+                TextInput:
+                    text: "0"
+        
+        AnchorLayout:
+            size_hint_y: None
+            height: 50
+            BoxLayout:
+                size_hint_x: None
+                width: 350
+                CheckBox:
+                    active: True
+                    size_hint_x: None
+                
+                Label:
+                    text: "Apagar equipo al terminar"
+            
+                    
+        Label:
+            size_hint_y: None
+            height: 60
+            text: "Listo para empezar clonacion"
+            
+                    
+        ProgressBar:
+            size_hint_y: None
+            height: 40
+            
+        Button:
+            size_hint_y: None
+            text: "Iniciar"
+                
+            
+            

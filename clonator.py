@@ -70,10 +70,13 @@ class ImageFiles(Popup):
         self.box_images = ScrollBox()
         self.box_images.orientation = "vertical"
         
-        for i in os.listdir(os.path.join(self.imagespath, 'IMAGES') ):
-            button = Button(text=i, height=50)
-            button.bind(on_press=self.on_button)
-            self.box_images.add_widget(button)
+        try:
+            for i in os.listdir(os.path.join(self.imagespath, 'IMAGES') ):
+                button = Button(text=i, height=50)
+                button.bind(on_press=self.on_button)
+                self.box_images.add_widget(button)
+        except:
+            pass
             
         #aceptar y cancelar
         self.btn_cancel = Button(text='Cancelar')
@@ -90,6 +93,13 @@ class Clonator(FloatLayout):
     def __init__(self, **kwargs):
         super(Clonator, self).__init__(**kwargs)
         
+        #llenar lista de discos duros origen
+        self.origen.values = self.list_disks_src()
+        
+        self.destino.values = self.list_disks_dst()
+        
+        
+        '''
         self.lay_box = BoxLayout(orientation='vertical', padding=50, spacing=10)
         
         self.clonando = False
@@ -135,6 +145,21 @@ class Clonator(FloatLayout):
         self.lay_box.add_widget(self.btn_apagar)
         
         self.add_widget(self.lay_box)
+        
+        '''
+        
+    def set_origen(self, value):
+        print(value)
+        
+        if value == "Archivo de imagen":
+            #abrir dialogo con la lista de imagenes disponibles
+            pass
+            
+        model, sn = get_hd_info(value)
+        
+        self.model_src.text = model
+        self.serial_src.text = sn
+        
         
     def apagar(self, w):
         if self.clonando:        
@@ -286,31 +311,7 @@ class Clonator(FloatLayout):
             self.lb_info.text = 'Clonacion terminada, ya puede apagar el equipo'
             Clock.unschedule(self.copy_block)
             self.clonando = False
-            
-    def alarm(self):
-        pass
-        
-    def add_commas(self, strnumber):
-        init = len(strnumber) % 3
-        newstr = strnumber[0:init]
-        for i in range(init, len(strnumber), 3):
-            newstr += ',' + strnumber[i:i+3]
-            
-        return newstr
-        
-    def list_disks(self):
-        basepath = '/dev/sd'
-        hds=[]
-        for i in range(ord('a'), ord('z')+1):
-            dev = basepath + chr(i)
-            try:
-                with open(dev):
-                    model, sn = get_hd_info(dev)
-                    if (model, sn) != (None,None):
-                        hds.append('Dev:' + dev + '     Model:' + model + '     SN:' + sn)
-            except:
-                continue
-        return hds
+
         
     def list_disks_src(self):
         basepath = '/dev/sd'
@@ -323,14 +324,16 @@ class Clonator(FloatLayout):
                     
                     if (model, sn) != (None,None) and sn not in hd_blacklist:
                         
-                        hds.append('Dev:' + dev + '     Model:' + model + '     SN:' + sn)
+                        #hds.append('Dev:' + dev + '     Model:' + model + '     SN:' + sn)
+                        hds.append( dev )
+                        
                         
                         #obtener posibles particiones de este disco duro
                         for j in range(1,9):
                             part = dev + str(j)
                             try:
                                 with open( part ):
-                                    hds.append('Particion: ' + part)
+                                    hds.append(part)
                                     
                             except:
                                 continue
@@ -339,7 +342,7 @@ class Clonator(FloatLayout):
                 continue
                 
         #agregar zero como origen
-        hds.append('Dev:' + '/dev/zero' + '     Model:' + 'Zeros' + '     SN:0000')
+        hds.append('/dev/zero')
         
         #agregar imagen como origen
         hds.append('Archivo de imagen')
@@ -358,7 +361,7 @@ class Clonator(FloatLayout):
                     
                     if (model, sn) != (None,None):
                         if sn not in hd_masters_list and sn not in hd_blacklist:
-                            hds.append('Dev:' + dev + '     Model:' + model + '     SN:' + sn)
+                            hds.append(dev)
                             
                             #checar que particiones pueden usarse como destino
                         
@@ -367,7 +370,7 @@ class Clonator(FloatLayout):
                                 part = dev + str(j)
                                 try:
                                     with open( part ):
-                                        hds.append('Particion: ' + part)
+                                        hds.append( part)
                                         
                                 except:
                                     continue                            
@@ -376,7 +379,7 @@ class Clonator(FloatLayout):
                 continue
                 
         #agregar destino null
-        hds.append('Dev:' + '/dev/null' + '     Model:' + 'Null' + '     SN:null')
+        hds.append('/dev/null')
 
         #agregar opcion de imagen como destino
         hds.append('Archivo de imagen')
