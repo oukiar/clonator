@@ -7,6 +7,9 @@
     model_src:model_src
     serial_src:serial_src
     
+    model_dst:model_dst
+    serial_dst:serial_dst
+    
     BoxLayout:
         orientation: "vertical"
         BoxLayout:
@@ -61,12 +64,14 @@
                     padding: 20
                     
                     Label:
+                        id: model_dst
                         text: "Model:"
                         text_size: self.size
                         halign: 'left'
                         valign: 'middle'
                         
                     Label:
+                        id: serial_dst
                         text: "S/N:"
                         text_size: self.size
                         halign: 'left'

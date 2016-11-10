@@ -157,9 +157,21 @@ class Clonator(FloatLayout):
             
         model, sn = get_hd_info(value)
         
-        self.model_src.text = model
-        self.serial_src.text = sn
+        self.model_src.text = "Model: " + model
+        self.serial_src.text = "S/N: " + sn
         
+        
+    def set_destino(self, value):
+        print(value)
+        
+        if value == "Archivo de imagen":
+            #abrir dialogo para especificar el nombre del archivo de imagen a generar
+            pass
+            
+        model, sn = get_hd_info(value)
+        
+        self.model_dst.text = "Model: " + model
+        self.serial_dst.text = "S/N: " + sn
         
     def apagar(self, w):
         if self.clonando:        
