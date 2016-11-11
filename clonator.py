@@ -105,11 +105,14 @@ class Clonator(FloatLayout):
         self.imagespath = '/mnt/DEVS'
         self.imgfiles = ImageFiles(imagespath=self.imagespath)
         
-        #llenar lista de imagenes        
-        for i in os.listdir(os.path.join(self.imagespath, 'IMAGES') ):
-            button = Button(text=i, height=50)
-            button.bind(on_press=self.on_select_image)
-            self.imgfiles.items.add_widget(button)
+        try:
+            #llenar lista de imagenes        
+            for i in os.listdir(os.path.join(self.imagespath, 'IMAGES') ):
+                button = Button(text=i, height=50)
+                button.bind(on_press=self.on_select_image)
+                self.imgfiles.items.add_widget(button)
+        except:
+            pass
         
         '''
         self.lay_box = BoxLayout(orientation='vertical', padding=50, spacing=10)
