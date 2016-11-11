@@ -1,5 +1,27 @@
 
+#:import ScrollBox devslib.scrollbox
 
+<ImageFiles>:
+    title: "Archivos de imagen"
+    items:items
+    size_hint: (None, None)
+    size: (640,600)
+    BoxLayout:  
+        orientation: "vertical"
+        ScrollBox:
+            orientation: "vertical"
+            id: items
+            
+        BoxLayout: 
+            size_hint_y: None
+            height: 60
+            Button:
+                text: "Cancelar"
+                on_release: root.dismiss()
+            Button:
+                text: "Aceptar"
+            
+            
 <Clonator>:
     origen:origen
     destino:destino
@@ -57,6 +79,7 @@
                     id: destino
                     size_hint_y: None
                     height: 50
+                    on_text: root.set_destino(args[1])
                 
                 BoxLayout:
                     orientation: "vertical"
@@ -117,6 +140,6 @@
         Button:
             size_hint_y: None
             text: "Iniciar"
-                
+            on_release: 
             
             

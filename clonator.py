@@ -52,6 +52,7 @@ class ImageName(ngDialog):
     
 class ImageFiles(Popup):
     
+    '''
     imgfile_selected = StringProperty('')
     
     def __init__(self, **kwargs):
@@ -65,7 +66,8 @@ class ImageFiles(Popup):
                                             size_hint=(None, None),
                                             size = (640,600),
                                             **kwargs)
-                          
+    '''
+    
     def list_images(self):
         self.box_images = ScrollBox()
         self.box_images.orientation = "vertical"
@@ -93,11 +95,21 @@ class Clonator(FloatLayout):
     def __init__(self, **kwargs):
         super(Clonator, self).__init__(**kwargs)
         
+        self.imgfile_selected = ""
+        
         #llenar lista de discos duros origen
         self.origen.values = self.list_disks_src()
         
         self.destino.values = self.list_disks_dst()
         
+        self.imagespath = '/mnt/DEVS'
+        self.imgfiles = ImageFiles(imagespath=self.imagespath)
+        
+        #llenar lista de imagenes        
+        for i in os.listdir(os.path.join(self.imagespath, 'IMAGES') ):
+            button = Button(text=i, height=50)
+            button.bind(on_press=self.on_select_image)
+            self.imgfiles.items.add_widget(button)
         
         '''
         self.lay_box = BoxLayout(orientation='vertical', padding=50, spacing=10)
@@ -148,14 +160,26 @@ class Clonator(FloatLayout):
         
         '''
         
+    def on_select_image(self, w):
+        print(w.text)
+        
+        self.imgfile_selected = w.text
+        
+        self.imgfiles.dismiss()
+        
+        #actualizar info
+        self.model_src.text = "Archivo de imagen"
+        self.serial_src.text = self.imgfile_selected
+        
     def set_origen(self, value):
         print(value)
         
         if value == "Archivo de imagen":
             #abrir dialogo con la lista de imagenes disponibles
-            pass
+            self.imgfiles.open()
+            return
             
-        model, sn = get_hd_info(value)
+        model, sn = get_hd_info(value[:8])
         
         self.model_src.text = "Model: " + model
         self.serial_src.text = "S/N: " + sn
