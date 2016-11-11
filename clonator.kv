@@ -32,6 +32,9 @@
     model_dst:model_dst
     serial_dst:serial_dst
     
+    inicio:inicio
+    lb_info:lb_info
+    
     BoxLayout:
         orientation: "vertical"
         BoxLayout:
@@ -111,6 +114,7 @@
                     text: "Continuar clonacion"
                     
                 TextInput:
+                    id: inicio
                     text: "0"
         
         AnchorLayout:
@@ -128,6 +132,7 @@
             
                     
         Label:
+            id: lb_info
             size_hint_y: None
             height: 60
             text: "Listo para empezar clonacion"
@@ -140,6 +145,6 @@
         Button:
             size_hint_y: None
             text: "Iniciar"
-            on_release: 
+            on_release: root.iniciar_clonacion()
             
             

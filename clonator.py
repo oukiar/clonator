@@ -97,6 +97,11 @@ class Clonator(FloatLayout):
         
         self.imgfile_selected = ""
         
+        self.clonando = False
+        
+        self.curblock = 0
+        self.sizeblock = 2**23   # 2 elevado a la 22 == 4MB
+        
         #llenar lista de discos duros origen
         self.origen.values = self.list_disks_src()
         
@@ -182,11 +187,20 @@ class Clonator(FloatLayout):
             self.imgfiles.open()
             return
             
-        model, sn = get_hd_info(value[:8])
+        elif value == "/dev/zero":
+
+            self.model_src.text = "Model: " + "0000"
+            self.serial_src.text = "S/N: " + "0000"
+            
+            self.devsrc = value
+                        
+        else:
+            model, sn = get_hd_info(value[:8])
+            
+            self.model_src.text = "Model: " + model
+            self.serial_src.text = "S/N: " + sn
         
-        self.model_src.text = "Model: " + model
-        self.serial_src.text = "S/N: " + sn
-        
+            self.devsrc = value
         
     def set_destino(self, value):
         print(value)
@@ -195,11 +209,21 @@ class Clonator(FloatLayout):
             #abrir dialogo para especificar el nombre del archivo de imagen a generar
             pass
             
-        model, sn = get_hd_info(value)
-        
-        self.model_dst.text = "Model: " + model
-        self.serial_dst.text = "S/N: " + sn
-        
+        elif value == "/dev/null":
+
+            self.model_dst.text = "Model: " + "NULL"
+            self.serial_dst.text = "S/N: " + "NULL"
+            
+            self.devdst = value
+            
+        else:
+            model, sn = get_hd_info(value)
+            
+            self.model_dst.text = "Model: " + model
+            self.serial_dst.text = "S/N: " + sn
+            
+            self.devdst = value
+            
     def apagar(self, w):
         if self.clonando:        
             self.msg = MessageBox(title='Existe clonacion en curso, confirma que desea apagar el sistema?')
@@ -305,6 +329,20 @@ class Clonator(FloatLayout):
         self.msg.btn_cancelar.bind(on_press=self.msg.dismiss)
         
         self.msg.open()
+        
+    def iniciar_clonacion(self):
+        Clock.schedule_interval(self.copy_block, 0)
+        
+        self.f_devsrc = open(self.devsrc, 'rb')
+        self.f_devdst = open(self.devdst, 'wb')        
+        
+        self.f_devsrc.seek(int(self.inicio.text), 0)
+        self.f_devdst.seek(int(self.inicio.text), 0)
+        
+        self.init_time = time.time()
+        
+        self.clonando = True
+        
         
     def iniciar_confirmado(self, w):
         #extraer dispositivo origen y disp. destino
