@@ -19,7 +19,7 @@ from kivy.properties import StringProperty
 import os, time
 
 from hdutils import get_hd_info
-from devslib.utils import MessageBox, MessageBoxTime, LabelItem, ngDialog
+
 from devslib.scrollbox import ScrollBox
 
 hd_blacklist = ['6VPEASNP', '5YD3JQBN', 'Z1D3CPFY']
@@ -29,65 +29,12 @@ hd_masters_list = ['63JGPN7GT']
 class DMesg(TextInput):
     pass
     
-class ImageName(ngDialog):
-    def __init__(self, **kwargs):
-        
-        self.layout = BoxLayout(orientation='vertical')
-        
-        self.txt_imagename = TextInput()
-        self.btn_aceptar = Button(text='Aceptar')
-        self.btn_cancelar = Button(text='Cancelar')
-        self.btn_cancelar.bind(on_press=self.dismiss)
-        
-        self.layout.add_widget(self.txt_imagename)
-        self.layout.add_widget(self.btn_aceptar)
-        self.layout.add_widget(self.btn_cancelar)
-        
-        super(ImageName, self).__init__(title='Nombre de imagen', 
-                                        content=self.layout, 
-                                        size_hint=(None, None),
-                                        size = (400,150),
-                                        **kwargs)
+class ImageName(Popup):
+    pass
         
     
 class ImageFiles(Popup):
-    
-    '''
-    imgfile_selected = StringProperty('')
-    
-    def __init__(self, **kwargs):
-        
-        self.imagespath = kwargs.get('imagespath')
-        
-        self.list_images()
-        
-        super(ImageFiles, self).__init__(title='Archivos de imagen', 
-                                            content = self.box_images,
-                                            size_hint=(None, None),
-                                            size = (640,600),
-                                            **kwargs)
-    '''
-    
-    def list_images(self):
-        self.box_images = ScrollBox()
-        self.box_images.orientation = "vertical"
-        
-        try:
-            for i in os.listdir(os.path.join(self.imagespath, 'IMAGES') ):
-                button = Button(text=i, height=50)
-                button.bind(on_press=self.on_button)
-                self.box_images.add_widget(button)
-        except:
-            pass
-            
-        #aceptar y cancelar
-        self.btn_cancel = Button(text='Cancelar')
-        self.btn_cancel.bind(on_press=self.dismiss)
-        self.box_images.add_widget(self.btn_cancel)
-            
-    def on_button(self, w):
-        self.imgfile_selected = w.text
-        self.dismiss()
+    pass
         
     
 class Clonator(FloatLayout):
@@ -109,6 +56,8 @@ class Clonator(FloatLayout):
         
         self.imagespath = '/mnt/DEVS'
         self.imgfiles = ImageFiles(imagespath=self.imagespath)
+        
+        self.imagename = ImageName()
         
         try:
             #llenar lista de imagenes        
@@ -168,8 +117,22 @@ class Clonator(FloatLayout):
         
         '''
         
+    def set_image_name(self):
+        '''
+        Seleccion de nombre para imagen destino
+        '''
+        #actualizar info
+        self.model_dst.text = "Archivo de imagen"
+        self.serial_dst.text = self.imagename.txt_imagename.text
+        
+        
+        self.devdst = os.path.join(self.imagespath, 'IMAGES', 
+                            self.imagename.txt_imagename.text)
+        
     def on_select_image(self, w):
-        print(w.text)
+        '''
+        Seleccion de archivo de imagen origen
+        '''
         
         self.imgfile_selected = w.text
         
@@ -179,8 +142,11 @@ class Clonator(FloatLayout):
         self.model_src.text = "Archivo de imagen"
         self.serial_src.text = self.imgfile_selected
         
+        self.devsrc = os.path.join(self.imagespath, 'IMAGES', 
+                            self.imgfile_selected)
+        
     def set_origen(self, value):
-        print(value)
+        #print(value)
         
         if value == "Archivo de imagen":
             #abrir dialogo con la lista de imagenes disponibles
@@ -203,11 +169,11 @@ class Clonator(FloatLayout):
             self.devsrc = value
         
     def set_destino(self, value):
-        print(value)
+        #print(value)
         
         if value == "Archivo de imagen":
             #abrir dialogo para especificar el nombre del archivo de imagen a generar
-            pass
+            self.imagename.open()
             
         elif value == "/dev/null":
 
@@ -224,111 +190,7 @@ class Clonator(FloatLayout):
             
             self.devdst = value
             
-    def apagar(self, w):
-        if self.clonando:        
-            self.msg = MessageBox(title='Existe clonacion en curso, confirma que desea apagar el sistema?')
-            self.msg.btn_aceptar.bind(on_press=self.apagar_confirmado)
-            self.add_widget(self.msg)
-            return
-            
-        os.system('poweroff')
         
-    def apagar_confirmado(self, w):            
-        os.system('poweroff')   
-        
-    def on_hd_src(self, w, val):
-        self.devsrc = self.get_dev(val)
-        
-        if self.devsrc == 'IMAGEN':
-            #self.add_widget(self.imgfiles)
-            self.imgfiles.open()
-            self.imgfiles.bind(imgfile_selected=self.on_selected_image)
-            
-    def on_selected_image(self, w, val):
-        self.devsrc = os.path.join(self.imagespath, 'IMAGES', val)
-        #self.remove_widget(self.imgfiles)
-        #self.hd_src.item.text = val
-        
-    def on_hd_dst(self, w, val):
-        devdst = self.get_dev(val)
-        
-        if devdst == 'IMAGEN':
-            self.dlg_imagename = ImageName()
-            self.dlg_imagename.btn_aceptar.bind(on_press=self.on_imagename)
-            
-            self.add_widget( self.dlg_imagename )
-            return
-        
-        if val == self.hd_src.item.text:
-            self.add_widget(MessageBoxTime(msg='El destino no puede ser el mismo que el origen', duration=2) )
-            return
-            
-        self.devdst = devdst
-        
-    def on_imagename(self, w):
-        '''
-        Evento cuando se acepta el archivo destino de imagen
-        '''        
-        self.devdst = os.path.join(self.imagespath, 'IMAGES', 
-                            self.dlg_imagename.txt_imagename.text)
-                            
-        self.remove_widget( self.dlg_imagename )
-        
-        
-    def get_dev(self, val):
-        '''
-        Analiza y extrae el archivo-dispositivo seleccionado
-        '''
-        
-        if val == 'Archivo de imagen':
-            return 'IMAGEN'
-            
-        if 'Particion' in val:
-            return val.split('Particion: ')[1]
-            
-        try:
-            tokens = val.split('     ')
-            dev = tokens[0].split(':')[1]
-            model = tokens[1].split(':')[1]
-            sn = tokens[2].split(':')[1]
-            #w.text = 'Dev: ' + dev + '\nModelo: ' + model + '\nSN: ' + sn
-            
-            
-            return dev
-        
-        except:
-            return val
-            
-        
-    def cancelar(self, w):
-        if self.clonando:        
-            self.msg = MessageBox(title='Existe clonacion en curso, confirma que desea cancelar la operacion?')
-            self.msg.btn_aceptar.bind(on_press=self.cancelar_confirmado)
-            self.add_widget(self.msg)
-            #self.msg.open()
-            return
-            
-    def cancelar_confirmado(self, w):
-        self.lb_info.text = 'Clonacion cancelada'
-        Clock.unschedule(self.copy_block)
-        self.clonando = False
-        self.msg.dismiss()
-        
-    def iniciar(self, w):
-        
-        if self.clonando:
-            self.add_widget(MessageBoxTime(msg='Ya se esta realizando la clonacion') )
-            return
-        
-        if self.hd_src.item.text == 'Origen' or self.hd_dst.item.text == 'Destino':
-            self.lb_info.text = 'ERROR: Debe elejir un origen y un destino'
-            return
-            
-        self.msg = MessageBox(title='Esta seguro que desea iniciar la operacion?', size_hint=(None,None), size=(400,150))
-        self.msg.btn_aceptar.bind(on_press=self.iniciar_confirmado)
-        self.msg.btn_cancelar.bind(on_press=self.msg.dismiss)
-        
-        self.msg.open()
         
     def iniciar_clonacion(self):
         Clock.schedule_interval(self.copy_block, 0)
@@ -343,22 +205,6 @@ class Clonator(FloatLayout):
         
         self.clonando = True
         
-        
-    def iniciar_confirmado(self, w):
-        #extraer dispositivo origen y disp. destino
-        Clock.schedule_interval(self.copy_block, 0)
-        
-        self.f_devsrc = open(self.devsrc, 'rb')
-        self.f_devdst = open(self.devdst, 'wb')        
-        
-        self.f_devsrc.seek(int(self.inicio.item.text), 0)
-        self.f_devdst.seek(int(self.inicio.item.text), 0)
-        
-        self.msg.dismiss()
-        
-        self.init_time = time.time()
-        
-        self.clonando = True
     
     def copy_block(self, dt):
         '''

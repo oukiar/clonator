@@ -1,6 +1,33 @@
 
 #:import ScrollBox devslib.scrollbox
 
+<ImageName>:
+    title: 'Nombre de imagen'
+    size_hint: (None, None)
+    size: (400,150)
+
+    txt_imagename:txt_imagename
+    btn_aceptar:btn_aceptar
+    btn_cancelar:btn_cancelar
+
+    BoxLayout:
+        orientation: "vertical"
+        
+        TextInput:
+            id: txt_imagename
+            
+        BoxLayout:
+        
+            Button:
+                id: btn_cancelar
+                text: "Cancelar"
+                on_release: root.dismiss()
+        
+            Button:
+                id: btn_aceptar
+                text: "Aceptar"
+                on_release: app.root.set_image_name()
+
 <ImageFiles>:
     title: "Archivos de imagen"
     items:items
