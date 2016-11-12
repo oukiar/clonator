@@ -68,54 +68,6 @@ class Clonator(FloatLayout):
         except:
             pass
         
-        '''
-        self.lay_box = BoxLayout(orientation='vertical', padding=50, spacing=10)
-        
-        self.clonando = False
-        
-        self.curblock = 0
-        self.sizeblock = 2**23   # 2 elevado a la 22 == 4MB
-        
-        self.imagespath = '/mnt/DEVS'
-        
-        #image files
-        #try:
-        self.imgfiles = ImageFiles(imagespath=self.imagespath)
-        #except:
-            #self.imgfiles = None
-        
-        self.hd_src = LabelItem(caption='Origen', itemtype=Spinner, item_kwargs={'text':'Seleccionar origen', 'values':self.list_disks_src()} )
-        self.hd_src.item.bind(text=self.on_hd_src)
-        self.lay_box.add_widget(self.hd_src)
-                
-        self.hd_dst = LabelItem(caption='Destino', itemtype=Spinner, item_kwargs={'text':'Seleccionar destino', 'values':self.list_disks_dst()} )
-        self.hd_dst.item.bind(text=self.on_hd_dst)
-        self.lay_box.add_widget(self.hd_dst)
-        
-        self.inicio = LabelItem(caption='Inicio', itemtype=TextInput, item_kwargs={'text':'0'} )
-        self.lay_box.add_widget(self.inicio)
-        
-        self.progress = ProgressBar()
-        self.lay_box.add_widget(self.progress)
-        
-        self.lb_info = Label(text='Estado: Listo para iniciar')
-        self.lay_box.add_widget(self.lb_info)
-
-        self.btn_iniciar = Button(text='Iniciar')
-        self.btn_iniciar.bind(on_press=self.iniciar)
-        self.lay_box.add_widget(self.btn_iniciar)
-
-        self.btn_cancelar = Button(text='Cancelar')
-        self.btn_cancelar.bind(on_press=self.cancelar)
-        self.lay_box.add_widget(self.btn_cancelar)
-        
-        self.btn_apagar = Button(text='Apagar equipo')
-        self.btn_apagar.bind(on_press=self.apagar)
-        self.lay_box.add_widget(self.btn_apagar)
-        
-        self.add_widget(self.lay_box)
-        
-        '''
         
     def set_image_name(self):
         '''
@@ -128,6 +80,8 @@ class Clonator(FloatLayout):
         
         self.devdst = os.path.join(self.imagespath, 'IMAGES', 
                             self.imagename.txt_imagename.text)
+                            
+        self.imagename.dismiss()
         
     def on_select_image(self, w):
         '''
