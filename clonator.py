@@ -54,7 +54,11 @@ class Clonator(FloatLayout):
         
         self.destino.values = self.list_disks_dst()
         
-        self.imagespath = '/mnt/DEVS'
+        if os.path.isdir('/mnt/DEVS'):
+            self.imagespath = '/mnt/DEVS'
+        elif os.path.isdir('/home/erick/DEVS_DATA/IMAGES'):
+            self.imagespath = '/home/erick/DEVS_DATA/IMAGES'
+            
         self.imgfiles = ImageFiles(imagespath=self.imagespath)
         
         self.imagename = ImageName()
