@@ -189,11 +189,15 @@ class Clonator(FloatLayout):
         if blk != '':
             self.f_devdst.write( blk )
         else:
-            self.alarm()
-            Video(source='alarm.mp3', state='play', options={'eos':'loop'})
-            self.lb_info.text = 'Clonacion terminada, ya puede apagar el equipo'
-            Clock.unschedule(self.copy_block)
-            self.clonando = False
+            #COPIA FINALIZADA
+            if self.apagar.active == True:
+                os.system("poweroff")
+            else:
+                self.alarm()
+                Video(source='alarm.mp4', state='play', options={'eos':'loop'})
+                self.lb_info.text = 'Clonacion terminada, ya puede apagar el equipo'
+                Clock.unschedule(self.copy_block)
+                self.clonando = False
 
         
     def list_disks_src(self):
