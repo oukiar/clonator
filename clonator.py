@@ -184,21 +184,34 @@ class Clonator(FloatLayout):
         else: mbs = 0
         
         self.lb_info.text = 'Copiados: ' + str( copied_mb ) + ' MB' + '\nTiempo transcurrido: ' + str(elapsed) + '\nVelocidad: ' + str(mbs) + ' MB/seg'
-                
-        blk = self.f_devsrc.read(self.sizeblock)
-        if blk != '':
-            self.f_devdst.write( blk )
-        else:
-            #COPIA FINALIZADA
+        
+        try:
+            
+            blk = self.f_devsrc.read(self.sizeblock)
+            if blk != '':
+                self.f_devdst.write( blk )
+            else:
+                #COPIA FINALIZADA
+                if self.apagar.active == True:
+                    os.system("poweroff")
+                else:
+                    #self.alarm()
+                    Video(source='alarm.mp4', state='play', options={'eos':'loop'})
+                    self.lb_info.text = 'Clonacion terminada, ya puede apagar el equipo'
+                    Clock.unschedule(self.copy_block)
+                    self.clonando = False
+        except:
+            return
+            #COPIA FINALIZADA CON ALGUN ERROR
             if self.apagar.active == True:
                 os.system("poweroff")
             else:
-                self.alarm()
+                #self.alarm()
                 Video(source='alarm.mp4', state='play', options={'eos':'loop'})
                 self.lb_info.text = 'Clonacion terminada, ya puede apagar el equipo'
                 Clock.unschedule(self.copy_block)
                 self.clonando = False
-
+                
         
     def list_disks_src(self):
         basepath = '/dev/sd'
