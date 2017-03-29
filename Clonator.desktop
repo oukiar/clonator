@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Clonator
+Comment=Utility for backup and copy hard disks
+Exec=/usr/bin/python main.py
+Icon=/home/clonlab/clonator/hard_drive_clone.png
+Path=/home/clonlab/clonator/
+Terminal=false
+Type=Application
