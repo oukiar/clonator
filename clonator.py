@@ -22,7 +22,7 @@ from hdutils import get_hd_info
 
 from devslib.scrollbox import ScrollBox
 
-hd_blacklist = ['6VPEASNP', '5YD3JQBN', 'Z1D3CPFY']
+hd_blacklist = ['6VPEASNP', '5YD3JQBN', 'Z1D3CPFY', '35TASD0PS']
 
 hd_masters_list = ['63JGPN7GT']
 
