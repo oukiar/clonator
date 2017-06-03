@@ -24,7 +24,7 @@ from devslib.scrollbox import ScrollBox
 
 hd_blacklist = ['6VPEASNP', '5YD3JQBN', 'Z1D3CPFY', '35TASD0PS']
 
-hd_masters_list = ['63JGPN7GT']
+hd_masters_list = ['63JGPN7GT', 'W1F2HP05']
 
 class DMesg(TextInput):
     pass

@@ -148,16 +148,26 @@
         
         AnchorLayout:
             size_hint_y: None
-            height: 50
+            height: 60
             BoxLayout:
                 size_hint_x: None
                 width: 350
-                CheckBox:
-                    active: True
-                    size_hint_x: None
-                    id: apagar
-                Label:
-                    text: "Apagar equipo al terminar"
+                orientation: "vertical"
+                BoxLayout:
+                    CheckBox:
+                        active: True
+                        size_hint_x: None
+                        id: apagar
+                    Label:
+                        text: "Apagar equipo al terminar"
+                        
+                BoxLayout:
+                    CheckBox:
+                        active: True
+                        size_hint_x: None
+                        id: apagar
+                    Label:
+                        text: "Regenerar sectores (4 pasadas)"
             
                     
         Label:
