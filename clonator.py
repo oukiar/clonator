@@ -158,7 +158,7 @@ class Clonator(FloatLayout):
         Clock.schedule_interval(self.copy_block, 0)
         
         self.f_devsrc = open(self.devsrc, 'rb')
-        self.f_devdst = open(self.devdst, 'wb')        
+        self.f_devdst = open(self.devdst, 'wb', 0) #unbuffered        
         
         self.f_devsrc.seek(int(self.inicio.text), 0)
         self.f_devdst.seek(int(self.inicio.text), 0)
@@ -192,6 +192,37 @@ class Clonator(FloatLayout):
             blk = self.f_devsrc.read(self.sizeblock)
             if blk != '':
                 self.f_devdst.write( blk )
+                
+                #si esta habilitada la escritura 4 veces
+                if self.ids.regenerar.active:
+                    #1
+                    #regresar el puntero de archivo
+                    self.f_devdst.seek(-self.sizeblock, 1)
+                    #escribir nuevamente el bloque de datos
+                    self.f_devdst.write( blk )
+                    #self.f_devdst.flush()
+                    #os.fsync(self.f_devdst.fileno() )
+                    
+                    #2
+                    #regresar el puntero de archivo
+                    self.f_devdst.seek(-self.sizeblock, 1)
+                    #escribir nuevamente el bloque de datos
+                    self.f_devdst.write( blk )
+                    
+                    #3
+                    #regresar el puntero de archivo
+                    self.f_devdst.seek(-self.sizeblock, 1)
+                    #escribir nuevamente el bloque de datos
+                    self.f_devdst.write( blk )
+                    
+                    #4
+                    #regresar el puntero de archivo
+                    self.f_devdst.seek(-self.sizeblock, 1)
+                    #escribir nuevamente el bloque de datos
+                    self.f_devdst.write( blk )
+                    
+                    print("Escritura cuadruple de regeneracion correcta")
+                
             else:
                 #COPIA FINALIZADA
                 if self.apagar.active == True:
@@ -203,6 +234,7 @@ class Clonator(FloatLayout):
                     Clock.unschedule(self.copy_block)
                     self.clonando = False
         except:
+            print("Error en copia: " + str(self.curblock) )
             return
             #COPIA FINALIZADA CON ALGUN ERROR
             if self.apagar.active == True:
