@@ -61,7 +61,8 @@ class Clonator(FloatLayout):
         elif os.path.isdir('/mnt/DATA'):
             self.imagespath = '/mnt/DATA'
         else: 
-            self.imagespath = ""
+            os.mkdir("IMAGES")
+            self.imagespath = "./"
             
         self.imgfiles = ImageFiles(imagespath=self.imagespath)
         
