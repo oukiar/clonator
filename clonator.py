@@ -223,6 +223,11 @@ class Clonator(FloatLayout):
                         print("Error: Los discos no son iguales")
                         
                         #detener
+                        self.lb_info.text = 'Error: Los discos no son iguales'
+                        Clock.unschedule(self.copy_block)
+                        self.clonando = False
+                        
+                        return
                 
                     #saltar 1GB por disco
                     self.f_devsrc.seek(2**30, 1)
