@@ -228,7 +228,7 @@ class Clonator(FloatLayout):
                     self.f_devsrc.seek(2**30, 1)
                     self.f_devdst.seek(2**30, 1)
                     
-                    self.curblock += 2**30
+                    self.curblock += (2**30) / self.sizeblock
                 
                 else:
                     
