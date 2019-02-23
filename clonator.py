@@ -61,10 +61,14 @@ class Clonator(FloatLayout):
         elif os.path.isdir('/mnt/DATA'):
             self.imagespath = '/mnt/DATA'
         else: 
-            os.mkdir("IMAGES")
-            self.imagespath = "./"
+            try:
+                self.imagespath = "./"
+                os.mkdir("IMAGES")
+            except:
+                pass
+
             
-        self.imgfiles = ImageFiles(imagespath=self.imagespath)
+        self.imgfiles = ImageFiles(imagespath=os.path.join(self.imagespath, 'IMAGES'))
         
         self.imagename = ImageName()
         
@@ -145,6 +149,12 @@ class Clonator(FloatLayout):
             
             self.devdst = value
             
+        elif value == "Escanear con antivirus":
+            
+            self.model_dst.text = "Model: " + "AV SCAN"
+            self.serial_dst.text = "S/N: " + "AV SERIAL SCAN"
+            
+            self.devdst = value
         else:
             model, sn = get_hd_info(value)
             
@@ -156,17 +166,23 @@ class Clonator(FloatLayout):
         
         
     def iniciar_clonacion(self):
-        Clock.schedule_interval(self.copy_block, 0)
         
-        self.f_devsrc = open(self.devsrc, 'rb')
-        self.f_devdst = open(self.devdst, 'wb', 0) #unbuffered        
+        #checar si se va a escanear
+        if self.devdst == "Escanear con antivirus":
+            print("Iniciando escaneo usando clamscan")
         
-        self.f_devsrc.seek(int(self.inicio.text), 0)
-        self.f_devdst.seek(int(self.inicio.text), 0)
-        
-        self.init_time = time.time()
-        
-        self.clonando = True
+        else:
+            Clock.schedule_interval(self.copy_block, 0)
+            
+            self.f_devsrc = open(self.devsrc, 'rb')
+            self.f_devdst = open(self.devdst, 'wb', 0) #unbuffered        
+            
+            self.f_devsrc.seek(int(self.inicio.text), 0)
+            self.f_devdst.seek(int(self.inicio.text), 0)
+            
+            self.init_time = time.time()
+            
+            self.clonando = True
         
     
     def copy_block(self, dt):
@@ -192,37 +208,55 @@ class Clonator(FloatLayout):
             
             blk = self.f_devsrc.read(self.sizeblock)
             if blk != '':
-                self.f_devdst.write( blk )
                 
-                #si esta habilitada la escritura 4 veces
-                if self.ids.regenerar.active:
-                    #1
-                    #regresar el puntero de archivo
-                    self.f_devdst.seek(-self.sizeblock, 1)
-                    #escribir nuevamente el bloque de datos
-                    self.f_devdst.write( blk )
-                    #self.f_devdst.flush()
-                    #os.fsync(self.f_devdst.fileno() )
+                if self.ids.comparacion.active:
                     
-                    #2
-                    #regresar el puntero de archivo
-                    self.f_devdst.seek(-self.sizeblock, 1)
-                    #escribir nuevamente el bloque de datos
-                    self.f_devdst.write( blk )
+                    print("Leyendo bloque en destino")
+                    blk2 = self.f_devdst.read( self.sizeblock )
                     
-                    #3
-                    #regresar el puntero de archivo
-                    self.f_devdst.seek(-self.sizeblock, 1)
-                    #escribir nuevamente el bloque de datos
+                    if blk != blk2:
+                        print("Error: Los discos no son iguales")
+                        
+                        #detener
+                
+                    
+                
+                
+                else:
+                    
                     self.f_devdst.write( blk )
                     
-                    #4
-                    #regresar el puntero de archivo
-                    self.f_devdst.seek(-self.sizeblock, 1)
-                    #escribir nuevamente el bloque de datos
-                    self.f_devdst.write( blk )
-                    
-                    print("Escritura cuadruple de regeneracion correcta")
+                    #si esta habilitada la escritura 4 veces
+                    if self.ids.regenerar.active:
+                        #1
+                        #regresar el puntero de archivo
+                        self.f_devdst.seek(-self.sizeblock, 1)
+                        #escribir nuevamente el bloque de datos
+                        self.f_devdst.write( blk )
+                        #self.f_devdst.flush()
+                        #os.fsync(self.f_devdst.fileno() )
+                        
+                        #2
+                        #regresar el puntero de archivo
+                        self.f_devdst.seek(-self.sizeblock, 1)
+                        #escribir nuevamente el bloque de datos
+                        self.f_devdst.write( blk )
+                        
+                        #3
+                        #regresar el puntero de archivo
+                        self.f_devdst.seek(-self.sizeblock, 1)
+                        #escribir nuevamente el bloque de datos
+                        self.f_devdst.write( blk )
+                        
+                        #4
+                        #regresar el puntero de archivo
+                        self.f_devdst.seek(-self.sizeblock, 1)
+                        #escribir nuevamente el bloque de datos
+                        self.f_devdst.write( blk )
+                        
+                        print("Escritura cuadruple de regeneracion correcta")
+                        
+
                 
             else:
                 #COPIA FINALIZADA
@@ -318,6 +352,10 @@ class Clonator(FloatLayout):
 
         #agregar opcion de imagen como destino
         hds.append('Archivo de imagen')
+        
+        #si el origen es particion, agregar opcion de pasar antivirus
+        hds.append('Escanear con antivirus')
+        
         
         return hds
 

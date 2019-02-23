@@ -148,7 +148,7 @@
         
         AnchorLayout:
             size_hint_y: None
-            height: 60
+            height: 70
             BoxLayout:
                 size_hint_x: None
                 width: 350
@@ -168,6 +168,14 @@
                         id: regenerar
                     Label:
                         text: "Regenerar sectores (4 pasadas)"
+                        
+                BoxLayout:
+                    CheckBox:
+                        #active: True
+                        size_hint_x: None
+                        id: comparacion
+                    Label:
+                        text: "Comparacion rapida"
             
                     
         Label:
