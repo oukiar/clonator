@@ -223,7 +223,7 @@ class Clonator(FloatLayout):
                         print("Error: Los discos no son iguales")
                         
                         #detener
-                        self.lb_info.text = 'Error: Los discos no son iguales'
+                        self.lb_info.text = 'Error: Los discos no son iguales\nComparados: ' + str( copied_mb ) + ' MB'
                         Clock.unschedule(self.copy_block)
                         self.clonando = False
                         
