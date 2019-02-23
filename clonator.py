@@ -224,8 +224,11 @@ class Clonator(FloatLayout):
                         
                         #detener
                 
+                    #saltar 1GB por disco
+                    self.f_devsrc.seek(2**30, 1)
+                    self.f_devdst.seek(2**30, 1)
                     
-                
+                    self.curblock += 2**30
                 
                 else:
                     
