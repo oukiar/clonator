@@ -177,7 +177,7 @@ class Clonator(FloatLayout):
             self.f_devsrc = open(self.devsrc, 'rb')
             
             if self.ids.comparacion.active:
-                self.f_devdst = open(self.devdst, 'rb') #unbuffered        
+                self.f_devdst = open(self.devdst, 'rb') #buffered        
             else:
                 self.f_devdst = open(self.devdst, 'wb', 0) #unbuffered        
             
