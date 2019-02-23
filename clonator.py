@@ -175,7 +175,12 @@ class Clonator(FloatLayout):
             Clock.schedule_interval(self.copy_block, 0)
             
             self.f_devsrc = open(self.devsrc, 'rb')
-            self.f_devdst = open(self.devdst, 'wb', 0) #unbuffered        
+            
+            if self.ids.comparacion.active:
+                self.f_devdst = open(self.devdst, 'rb') #unbuffered        
+            else:
+                self.f_devdst = open(self.devdst, 'wb', 0) #unbuffered        
+            
             
             self.f_devsrc.seek(int(self.inicio.text), 0)
             self.f_devdst.seek(int(self.inicio.text), 0)
