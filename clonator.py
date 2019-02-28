@@ -236,7 +236,7 @@ class Clonator(FloatLayout):
                     self.curblock += (2**30) / self.sizeblock
                 
                 else:
-                    
+                    print("Escribiendo bloque en destino")
                     self.f_devdst.write( blk )
                     
                     #si esta habilitada la escritura 4 veces
