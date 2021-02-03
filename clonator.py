@@ -68,7 +68,8 @@ class Clonator(FloatLayout):
                 pass
 
             
-        self.imgfiles = ImageFiles(imagespath=os.path.join(self.imagespath, 'IMAGES'))
+        #self.imgfiles = ImageFiles(imagespath=os.path.join(self.imagespath, 'IMAGES'))
+        self.imgfiles = ImageFiles()
         
         self.imagename = ImageName()
         
@@ -197,7 +198,7 @@ class Clonator(FloatLayout):
         
         self.curblock += 1
         
-        print 'Copiado: ', self.curblock
+        print('Copiado: ', self.curblock)
         
         copied = self.curblock * self.sizeblock
         copied_mb = int(copied / 2**20)

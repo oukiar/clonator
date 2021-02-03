@@ -32,7 +32,7 @@ def get_hd_info(devhd):
         return (model, serial_no)
 
 if __name__ == '__main__':
-    print get_hd_info('/dev/sda')
+    print (get_hd_info('/dev/sda'))
 
 ## For documentation purposes, this is the struct copied from <hdreg.h>
 # struct hd_driveid {
