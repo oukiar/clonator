@@ -159,8 +159,8 @@ class Clonator(FloatLayout):
         else:
             model, sn = get_hd_info(value)
             
-            self.model_dst.text = "Model: " + model
-            self.serial_dst.text = "S/N: " + sn
+            self.model_dst.text = "Model: " + str(model)
+            self.serial_dst.text = "S/N: " + str(sn)
             
             self.devdst = value
             
